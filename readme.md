@@ -1,4 +1,4 @@
 #### Dependencies:
 
-* [PubSubClient](https://arduinojson.org)
+* [PubSubClient](https://github.com/knolleary/pubsubclient/)
 * [ArduinoJson](https://arduinojson.org)
