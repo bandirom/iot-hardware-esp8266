@@ -6,6 +6,9 @@ WiFiClient espClient;
 PubSubClient client(espClient);
 MqttJson mqtt(client);
 
+long lastMsg = 0;
+char payload[700];
+
 void setup_wifi() {
   delay(10);
   Serial.print("Connecting to ");
@@ -27,10 +30,18 @@ void setup() {
   Serial.begin(115200);
   setup_wifi();
   mqtt.init(mqtt_server, mqtt_user, mqtt_password, mqtt_id);
+  mqtt.setDeviceUUID(uuid);
+  mqtt.subscribe(subscribe_topic);
 }
 
 void loop() {
   if (!mqtt.connected()) {
     mqtt.reconnect();
+  }
+  mqtt.loop();
+  long now = millis();
+  if (now - lastMsg > 2000) {
+    lastMsg = now;
+    mqtt.publish(publish_topic, payload);
   }
 }

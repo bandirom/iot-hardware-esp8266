@@ -1,6 +1,8 @@
 #include "Arduino.h"
 #include "mqtt.h"
+#include <ArduinoJson.h>
 
+StaticJsonDocument<256> doc;
 
 MqttJson::MqttJson(PubSubClient& mqtt_client) : client(mqtt_client) {}
 
@@ -33,7 +35,6 @@ void MqttJson::reconnect() {
     // Attempt to connect
     if (client.connect(_mqtt_id, _mqtt_user, _mqtt_password)) {
       Serial.println("connected");
-      // Once connected, publish an announcement...
       client.publish("mq2_mqtt", "hello world init");
       // ... and resubscribe
       client.subscribe("subscribe_topic");
@@ -49,4 +50,33 @@ void MqttJson::reconnect() {
 
 bool MqttJson::connected() {
   return client.connected();
+}
+
+bool MqttJson::loop() {
+  return client.loop();
+}
+
+bool MqttJson::subscribe(const char* topic){
+  subscribe_topic = topic;
+  return client.subscribe(subscribe_topic);
+}
+
+MqttJson& MqttJson::setDeviceUUID(const char* device_uuid) {
+  this->uuid = device_uuid;
+  return *this;
+}
+
+
+bool MqttJson::publish(const char* topic, const char* payload) {
+  float temperature = random(0, 50);
+  int humidity = random(30, 99);
+  char buffer[256];
+  doc["uuid"] = uuid;
+  doc["sensors"]["temperature"] = temperature;
+  doc["sensors"]["humidity"] = humidity;
+  Serial.println();
+  Serial.println("Publish message");
+  serializeJsonPretty(doc, Serial);
+  size_t n = serializeJson(doc, buffer);
+  return client.publish(topic, buffer, n);
 }

@@ -13,6 +13,10 @@ class MqttJson {
     void reconnect();
 //    void setSubscribeTopic();
     bool connected();
+    bool loop();
+    bool publish(const char* topic, const char* payload);
+    bool subscribe(const char* topic);
+    MqttJson& setDeviceUUID(const char* device_uuid);
   private:
     const int mqtt_port = 1883;
     static void callback(char* topic, byte* payload, unsigned int length);
@@ -20,6 +24,8 @@ class MqttJson {
     const char* _mqtt_user;
     const char* _mqtt_password;
     const char* _mqtt_id;
+    const char* uuid;
+    const char* subscribe_topic;
 };
 
 #endif

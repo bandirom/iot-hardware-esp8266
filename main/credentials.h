@@ -1,6 +1,7 @@
 #ifndef CREDS_h
 #define CREDS_h
 
+const char* uuid = "056ebcfe-ec2d-42f7-8396-a30137f99d08";
 const char* ssid = "bandirom";
 const char* password = "Hk45Erf3W";
 const char* mqtt_server = "192.168.1.104";
